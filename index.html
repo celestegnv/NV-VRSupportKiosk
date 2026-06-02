@@ -198,16 +198,6 @@
     let countdownTimer = null;
     let countdownValue = 5;
 
-    function getHash() {
-      return window.location.hash || '';
-    }
-
-    function getStateFromHash() {
-      const hash = getHash();
-      const match = hash.match(/state=([^&]+)/);
-      return match ? match[1] : 'Standby';
-    }
-
     function stopCountdown() {
       if (countdownTimer) {
         clearInterval(countdownTimer);
@@ -218,12 +208,11 @@
     function startCountdown() {
       stopCountdown();
       countdownValue = 5;
-      const countdownEl = document.getElementById('countdownValue');
-      countdownEl.textContent = countdownValue;
+      document.getElementById('countdownValue').textContent = countdownValue;
 
       countdownTimer = setInterval(() => {
         countdownValue -= 1;
-        countdownEl.textContent = countdownValue;
+        document.getElementById('countdownValue').textContent = countdownValue;
 
         if (countdownValue <= 0) {
           stopCountdown();
@@ -233,9 +222,7 @@
     }
 
     function renderState() {
-      const hash = getHash();
-      const state = getStateFromHash();
-
+      const hash = window.location.hash || '';
       const title = document.getElementById('title');
       const subtitle = document.getElementById('subtitle');
       const statusText = document.getElementById('statusText');
@@ -245,17 +232,20 @@
       if (hash.includes('countdown-completed')) {
         stopCountdown();
         title.textContent = 'Connecting';
-        subtitle.textContent = 'Please wait while we connect you to virtual support.';
+        subtitle.textContent = 'Connecting to Support Agent';
         statusText.textContent = 'Connecting to support...';
         return;
       }
 
-      if (state === 'Countdown') {
+      if (hash.includes('state=Countdown')) {
         document.body.classList.add('countdown');
-        title.textContent = 'Welcome';
-        subtitle.textContent = 'Step up to the device to begin a virtual support call.';
+        title.textContent = 'Connecting';
+        subtitle.textContent = 'Connecting to Support Agent';
         statusText.textContent = 'Preparing support session...';
-        startCountdown();
+
+        if (!countdownTimer) {
+          startCountdown();
+        }
         return;
       }
 
@@ -267,7 +257,7 @@
     }
 
     window.addEventListener('hashchange', renderState);
-    renderState();
+    window.addEventListener('load', renderState);
   </script>
 </body>
 </html>
