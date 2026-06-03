@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Virtual Support Kiosk</title>
   <style>
     :root {
-      --bg: #050608;
-      --panel: #111318;
-      --panel-alt: #181b22;
-      --text: #f5f7fb;
-      --muted: #9ca3b5;
-      --nvidia-green: #76b900; /* NVIDIA green */
-      --nvidia-green-soft: #9fe62b;
-      --danger: #f97373;
-      --border-soft: rgba(255,255,255,0.08);
+      --bg: #040506;
+      --text: #f8fbff;
+      --muted: #c8d0da;
+      --nvidia-green: #76b900;
+      --nvidia-green-soft: #b8f34a;
     }
 
     * { box-sizing: border-box; }
@@ -23,98 +19,156 @@
       margin: 0;
       width: 100%;
       height: 100%;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top left, #1a2b10 0, transparent 45%),
-        radial-gradient(circle at top right, #122033 0, transparent 50%),
-        radial-gradient(circle at bottom, #050608 0, #020306 55%);
+        radial-gradient(circle at top left, rgba(118,185,0,0.10) 0, transparent 35%),
+        radial-gradient(circle at top right, rgba(18,32,51,0.30) 0, transparent 42%),
+        radial-gradient(circle at bottom, #06080b 0, #020306 60%);
       color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       overflow: hidden;
     }
 
     .screen {
       display: none;
       width: 100%;
-      max-width: 960px;
+      height: 100%;
       padding: 32px;
     }
 
     .screen.active {
-      display: block;
-    }
-
-    .card {
-      background: radial-gradient(circle at top center, #181d22 0, #090b0f 80%);
-      border-radius: 24px;
-      border: 1px solid var(--border-soft);
-      box-shadow:
-        0 30px 80px rgba(0,0,0,0.7),
-        0 0 0 1px rgba(118,185,0,0.10);
-      padding: 40px 56px 48px;
-      text-align: center;
-    }
-
-    .badge-row {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      margin-bottom: 20px;
     }
 
-    .status-dot {
-      width: 14px;
-      height: 14px;
+    .card {
+      width: min(1180px, 100%);
+      padding: 20px 24px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
+    .brand-mark {
+      position: relative;
+      width: 108px;
+      height: 108px;
+      margin: 0 auto 20px;
+      display: grid;
+      place-items: center;
+    }
+
+    .brand-pulse,
+    .brand-dot {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
       border-radius: 999px;
+    }
+
+    .brand-pulse {
+      width: 40px;
+      height: 40px;
+      background: rgba(118,185,0,0.22);
+      box-shadow:
+        0 0 0 0 rgba(118,185,0,0.36),
+        0 0 36px rgba(118,185,0,0.20);
+      animation: pulseWave 4.6s ease-out infinite;
+    }
+
+    .brand-dot {
+      width: 30px;
+      height: 30px;
       background: var(--nvidia-green);
-      box-shadow: 0 0 16px rgba(118,185,0,0.7);
+      box-shadow:
+        0 0 22px rgba(118,185,0,0.92),
+        0 0 56px rgba(118,185,0,0.38);
+      animation: dotBreath 4.6s ease-in-out infinite;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(118,185,0,0.5);
-      background: linear-gradient(
-        135deg,
-        rgba(118,185,0,0.14),
-        rgba(118,185,0,0.04)
-      );
-      color: var(--nvidia-green-soft);
-      font-size: 13px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+    @keyframes pulseWave {
+      0%, 55%, 100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.7);
+        box-shadow:
+          0 0 0 0 rgba(118,185,0,0.00),
+          0 0 16px rgba(118,185,0,0.00);
+      }
+
+      8% {
+        opacity: 0.95;
+        transform: translate(-50%, -50%) scale(0.95);
+        box-shadow:
+          0 0 0 0 rgba(118,185,0,0.34),
+          0 0 24px rgba(118,185,0,0.22);
+      }
+
+      24% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(3.2);
+        box-shadow:
+          0 0 0 30px rgba(118,185,0,0.00),
+          0 0 70px rgba(118,185,0,0.04);
+      }
+    }
+
+    @keyframes dotBreath {
+      0%, 55%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow:
+          0 0 22px rgba(118,185,0,0.92),
+          0 0 56px rgba(118,185,0,0.38);
+      }
+
+      12% {
+        transform: translate(-50%, -50%) scale(1.2);
+        box-shadow:
+          0 0 30px rgba(118,185,0,1),
+          0 0 72px rgba(118,185,0,0.48);
+      }
+
+      24% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow:
+          0 0 22px rgba(118,185,0,0.92),
+          0 0 56px rgba(118,185,0,0.34);
+      }
     }
 
     h1 {
-      margin: 0 0 12px;
-      font-size: clamp(40px, 6vw, 64px);
-      letter-spacing: 0.02em;
+      margin: 0 0 18px;
+      font-size: clamp(56px, 7vw, 96px);
+      line-height: 0.98;
+      letter-spacing: 0.01em;
+      text-wrap: balance;
+      font-weight: 800;
     }
 
     p.lead {
-      margin: 0 0 8px;
-      font-size: 22px;
+      margin: 0 auto 16px;
+      max-width: 18ch;
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: 1.12;
+      font-weight: 700;
       color: var(--text);
+      text-wrap: balance;
     }
 
     p.sub {
-      margin: 8px 0 0;
-      font-size: 16px;
+      margin: 0 auto;
+      max-width: 28ch;
+      font-size: clamp(22px, 2.2vw, 30px);
+      line-height: 1.28;
       color: var(--muted);
+      font-weight: 600;
+      text-wrap: balance;
     }
 
-    /* Countdown visuals */
     #timer {
-      margin: 28px 0 6px;
-      font-size: clamp(90px, 14vw, 150px);
-      font-weight: 700;
+      margin: 28px 0 8px;
+      font-size: clamp(110px, 15vw, 180px);
+      font-weight: 800;
       line-height: 1;
       color: var(--nvidia-green-soft);
       font-variant-numeric: tabular-nums;
@@ -124,27 +178,30 @@
     }
 
     .timer-label {
-      font-size: 16px;
+      font-size: 20px;
       color: var(--muted);
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      font-weight: 700;
     }
 
-    /* Buttons row */
     .actions {
       display: flex;
       justify-content: center;
       gap: 16px;
-      margin-top: 28px;
+      margin-top: 32px;
     }
 
     button {
       border: none;
       cursor: pointer;
       font: inherit;
-      padding: 10px 22px;
+      padding: 14px 28px;
       border-radius: 999px;
-      min-width: 130px;
+      min-width: 180px;
+      min-height: 56px;
+      font-size: 22px;
+      font-weight: 700;
       transition:
         transform 0.12s ease-out,
         box-shadow 0.12s ease-out,
@@ -154,48 +211,71 @@
     }
 
     button:focus-visible {
-      outline: 2px solid var(--nvidia-green-soft);
-      outline-offset: 3px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #76b900, #9fe62b);
-      color: #060807;
-      font-weight: 600;
-      box-shadow:
-        0 12px 30px rgba(118,185,0,0.6),
-        0 0 0 1px rgba(0,0,0,0.7);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 18px 40px rgba(118,185,0,0.8),
-        0 0 0 1px rgba(0,0,0,0.9);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-      box-shadow:
-        0 8px 18px rgba(118,185,0,0.6),
-        0 0 0 1px rgba(0,0,0,1);
+      outline: 3px solid var(--nvidia-green-soft);
+      outline-offset: 4px;
     }
 
     .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border: 1px solid rgba(200,208,218,0.35);
     }
 
     .btn-ghost:hover {
-      background: rgba(148,163,184,0.08);
-      color: #e5e7eb;
+      background: rgba(255,255,255,0.10);
+      color: #ffffff;
       transform: translateY(-1px);
     }
 
     .btn-ghost:active {
       transform: translateY(0);
-      background: rgba(148,163,184,0.16);
+      background: rgba(255,255,255,0.16);
+    }
+
+    @media (max-width: 768px) {
+      .screen {
+        padding: 18px;
+      }
+
+      .brand-mark {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 16px;
+      }
+
+      .brand-pulse {
+        width: 28px;
+        height: 28px;
+      }
+
+      .brand-dot {
+        width: 22px;
+        height: 22px;
+      }
+
+      .timer-label {
+        font-size: 16px;
+      }
+
+      button {
+        min-width: 150px;
+        font-size: 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .brand-pulse,
+      .brand-dot {
+        animation: none;
+      }
+
+      .brand-pulse {
+        opacity: 0;
+      }
+
+      .brand-dot {
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
   </style>
 </head>
@@ -203,34 +283,31 @@
   <!-- Standby screen -->
   <div id="standby" class="screen active">
     <div class="card">
-      <div class="badge-row">
-        <div class="status-dot" aria-hidden="true"></div>
-        <div class="badge">Virtual Support</div>
+      <div class="brand-mark" aria-hidden="true">
+        <span class="brand-pulse"></span>
+        <span class="brand-dot"></span>
       </div>
-      <h1>Welcome</h1>
-      <p class="lead">Step up to the device to begin a virtual support call.</p>
-      <p class="sub">The session will start automatically when support is available.</p>
+
+      <h1>Welcome to Virtual Support</h1>
+      <p class="sub">Stand in front of the device, your call will start automatically</p>
     </div>
   </div>
 
   <!-- Countdown screen -->
   <div id="countdown" class="screen" aria-live="assertive">
     <div class="card">
-      <div class="badge-row">
-        <div class="status-dot" aria-hidden="true"></div>
-        <div class="badge">Virtual Support</div>
+      <div class="brand-mark" aria-hidden="true">
+        <span class="brand-pulse"></span>
+        <span class="brand-dot"></span>
       </div>
-      <h1>Connecting you to support</h1>
-      <p class="lead">Please remain in front of the device.</p>
+
+      <h1>Connecting to support</h1>
+      <p class="lead">Please stay in front of the device</p>
       <div id="timer">10</div>
       <div class="timer-label">Seconds remaining</div>
-      <p class="sub">
-        When the timer reaches zero, this system will place your call automatically.
-      </p>
+      <p class="sub">Your call will begin automatically.</p>
 
       <div class="actions">
-        <!-- Optional: could be used later for “Connect now” -->
-        <!-- <button class="btn-primary" type="button">Connect now</button> -->
         <button id="cancelBtn" class="btn-ghost" type="button">
           Cancel call
         </button>
@@ -239,7 +316,6 @@
   </div>
 
   <script>
-    // Countdown length in seconds (NVIDIA-style timer)
     const COUNTDOWN_SECONDS = 5;
     let countdownHandle = null;
 
@@ -279,7 +355,6 @@
         if (seconds <= 0) {
           clearInterval(countdownHandle);
           countdownHandle = null;
-          // Signal to codec that countdown completed
           window.location.hash = 'countdown-completed';
         }
       }, 1000);
@@ -290,7 +365,6 @@
         clearInterval(countdownHandle);
         countdownHandle = null;
       }
-      // Return to standby state and clear any call trigger
       window.location.hash = 'state=Standby';
       showStandby();
     }
@@ -301,19 +375,15 @@
       if (hash === '#state=Countdown') {
         startCountdown();
       } else if (hash === '#countdown-completed') {
-        // Keep countdown screen, timer at 0; codec should place call now
         setScreen('countdown');
         const timerEl = document.getElementById('timer');
         if (timerEl) timerEl.textContent = '0';
       } else {
-        // Default and #state=Standby or anything else
         showStandby();
       }
     }
 
-    // Wire up cancel button
     document.getElementById('cancelBtn')?.addEventListener('click', cancelCountdown);
-
     window.addEventListener('hashchange', renderPage);
     renderPage();
   </script>
